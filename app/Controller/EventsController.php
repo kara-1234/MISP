@@ -3009,6 +3009,7 @@ class EventsController extends AppController
     // ! - you can negate a search term. For example: google.com&&!mail would search for all attributes with value google.com but not ones that include mail. www.google.com would get returned, mail.google.com wouldn't.
     public function restSearch($returnFormat = 'json', $value = false, $type = false, $category = false, $org = false, $tags = false, $searchall = false, $from = false, $to = false, $last = false, $eventid = false, $withAttachments = false, $metadata = false, $uuid = false, $publish_timestamp = false, $timestamp = false, $published = false, $enforceWarninglist = false, $sgReferenceOnly = false)
     {
+		$this->Event->benchmarkInit('restSearch');
         $paramArray = array('value', 'type', 'category', 'org', 'tag', 'tags', 'searchall', 'from', 'to', 'last', 'eventid', 'withAttachments', 'metadata', 'uuid', 'published', 'publish_timestamp', 'timestamp', 'enforceWarninglist', 'sgReferenceOnly');
         $filterData = array(
             'request' => $this->request,
@@ -3087,7 +3088,7 @@ class EventsController extends AppController
             if (!empty($result)) {
                 $this->loadModel('Whitelist');
                 $result = $this->Whitelist->removeWhitelistedFromArray($result, false);
-				$temp = $exportTool->handler($result[0], $exportToolParams);
+				$temp = $exportTool->handler($result[0], $exportToolParams, $this->Event);
 				if ($temp !== '') {
 					if ($k !== 0) {
 						$final .= $exportTool->separator($exportToolParams);
@@ -3099,6 +3100,9 @@ class EventsController extends AppController
         }
 		$final .= $exportTool->footer($exportToolParams);
 		$responseType = $validFormats[$returnFormat][0];
+		$this->Event->benchmark('restSearch');
+		debug($this->Event->benchmarkResult());
+		throw new Exception();
 		return $this->RestResponse->viewData($final, $responseType, false, true);
     }
 
