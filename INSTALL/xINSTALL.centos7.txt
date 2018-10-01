@@ -95,6 +95,9 @@ sudo yum install rh-php56 rh-php56-php-fpm rh-php56-php-devel rh-php56-php-mysql
 # https://www.softwarecollections.org/en/scls/rhscl/rh-python36/
 sudo yum install rh-python36 -y
 
+# Add python3 to /usr/bin/python3 
+update-alternatives --install /usr/bin/python3 python3 /opt/rh/rh-python36/root/usr/bin/python3 2
+
 # rh-php56-php only provided mod_php for httpd24-httpd from SCL
 # if we want to use httpd from CentOS base we can use rh-php56-php-fpm instead
 sudo systemctl enable rh-php56-php-fpm.service
